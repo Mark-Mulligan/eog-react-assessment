@@ -23,6 +23,7 @@ query($latLong: WeatherQuery!) {
 
 const getWeather = (state: IState) => {
   const { temperatureinFahrenheit, description, locationName } = state.weather;
+  
   return {
     temperatureinFahrenheit,
     description,

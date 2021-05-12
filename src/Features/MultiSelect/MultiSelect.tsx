@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useDispatch, useSelector } from 'react-redux';
-import { actions } from './metricsAvailableReducer';
+import { actions } from './reducer';
 import { IState } from '../../store';
 import { FormControl, InputLabel, Select, Input, Chip, MenuItem } from '@material-ui/core';
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -18,10 +18,10 @@ const MenuProps = {
   },
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   chips: {
-    display: "flex",
-    flexWrap: "wrap",
+    display: 'flex',
+    flexWrap: 'wrap',
   },
   chip: {
     margin: 2,
@@ -39,12 +39,12 @@ const query = `
 `;
 
 const getMetricsAvailable = (state: IState) => {
-  const { metricsAvailable } = state.metricsAvailable;
+  const { metricsAvailable, metricsSelected } = state.metrics;
   return {
     metricsAvailable,
+    metricsSelected
   };
 };
-
 
 export default () => {
   return (
@@ -57,19 +57,22 @@ export default () => {
 const MultiSelect = () => {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+  const { metricsAvailable, metricsSelected } = useSelector(getMetricsAvailable);
+
   // Placeholder state for select.  Need to put in store
   const [selected, setSelected] = useState<string[]>([]);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelected(event.target.value as string[]);
+    //setSelected(event.target.value as string[]);
+    const optionsSelected = event.target.value as string[];
+    dispatch(actions.metricsSelected(optionsSelected as any))
   };
 
-  const dispatch = useDispatch();
-
-  const { metricsAvailable } = useSelector(getMetricsAvailable);
+  
 
   const [result] = useQuery({
-    query
+    query,
   });
 
   const { fetching, data, error } = result;
@@ -85,40 +88,38 @@ const MultiSelect = () => {
     const { getMetrics } = data;
     console.log(data);
     dispatch(actions.metricsAvailable(getMetrics));
-
-  }, [ data, error, dispatch]);
+  }, [data, error, dispatch, metricsSelected]);
 
   if (fetching) return <LinearProgress />;
 
   return (
-    <FormControl variant="outlined" fullWidth>
-      <InputLabel id="metric-select-label">Color</InputLabel>
-      <Select
-        required
-        labelId="metric-select-label"
-        id="metric-select"
-        multiple
-        value={selected}
-        onChange={handleChange}
-        input={<Input id="shoe-color-chip" />}
-        renderValue={(selected) => (
-          <div className={classes.chips}>
-            {(selected as string[]).map((value) => (
+    <div className="container mt-5">
+      <FormControl variant="outlined" fullWidth>
+        <InputLabel id="metric-select-label">Metric</InputLabel>
+        <Select
+          required
+          labelId="metric-select-label"
+          id="metric-select"
+          multiple
+          value={metricsSelected}
+          onChange={handleChange}
+          input={<Input id="metric-color-chip" />}
+          renderValue={metricsSelected => (
+            <div className={classes.chips}>
+              {(metricsSelected as string[]).map(value => (
                 <Chip key={value} label={value} className={classes.chip} />
               ))}
-          </div>
-        )}
-        MenuProps={MenuProps}
-      >
-        {metricsAvailable.map((metric) => (
-          <MenuItem key={metric} value={metric}>
-            {metric}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  )
+            </div>
+          )}
+          MenuProps={MenuProps}
+        >
+          {metricsAvailable.map(metric => (
+            <MenuItem key={metric} value={metric}>
+              {metric}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
+  );
 };
-
-
-
