@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
 
 export type CurrentOilTemp = {
-  temperature: number;
-  time: number;
+  at: number;
+  metric: string;
   unit: string;
+  value: number;
 };
 
 export type ApiErrorAction = {
@@ -11,9 +12,10 @@ export type ApiErrorAction = {
 };
 
 const initialState = {
-  temperature: 0,
-  time: 0,
+  at: 0,
+  metric: '',
   unit: '',
+  value: 0
 };
 
 const slice = createSlice({
@@ -21,12 +23,13 @@ const slice = createSlice({
   initialState,
   reducers: {
     currentOilTempRecevied: (state, action: PayloadAction<CurrentOilTemp>) => {
-      const { temperature, time, unit } = action.payload;
-      state.temperature = temperature;
-      state.time = time;
+      const { at, metric, unit, value } = action.payload;
+      state.at = at;
+      state.metric = metric;
       state.unit = unit;
+      state.value = value;
     },
-    weatherApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+    metricsApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
   },
 });
 
