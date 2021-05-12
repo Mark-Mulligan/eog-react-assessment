@@ -42,13 +42,15 @@ const OilChart = () => {
   const dispatch = useDispatch();
 
   const { at, metric, unit, value } = useSelector(getOilTemp);
+  let date = new Date(at);
+
+  console.log(date.toLocaleString());
 
   const [result] = useQuery({
     query
   });
 
   const { fetching, data, error } = result;
-  //console.log(result);
 
   useEffect(() => {
     if (error) {
@@ -59,7 +61,6 @@ const OilChart = () => {
     if (!data) return;
 
     const { getLastKnownMeasurement } = data;
-    console.log(getLastKnownMeasurement);
     dispatch(actions.currentOilTempRecevied(getLastKnownMeasurement));
 
   }, [ data, error, dispatch]);
@@ -68,8 +69,11 @@ const OilChart = () => {
 
   return (
     <div>
-      <h1>{data.getLastKnownMeasurement.metric}</h1>
-      <p>{data.getLastKnownMeasurement.value}</p>
+      <h1>{metric}</h1>
+      <p>{unit}</p>
+      <p>{at}</p>
+      
+      <p>{value}</p>
     </div>
   )
 };
