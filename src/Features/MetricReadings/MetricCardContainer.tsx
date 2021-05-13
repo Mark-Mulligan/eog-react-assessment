@@ -5,11 +5,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IState } from '../../store';
 import MetricCard from "../../components/MetricCard";
 
+const client = createClient({
+  url: 'https://react.eogresources.com/graphql',
+});
+
 const getMetricsSelected = (state: IState) => {
   const { metricsSelected } = state.metrics;
   return {
     metricsSelected
   };
+};
+
+export default () => {
+  return (
+    <Provider value={client}>
+      <MetricCardContainer />
+    </Provider>
+  );
 };
 
 const MetricCardContainer = () => {
@@ -27,6 +39,4 @@ const MetricCardContainer = () => {
     </div>
   );
 };
-
-export default MetricCardContainer;
 
