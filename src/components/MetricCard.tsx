@@ -17,8 +17,8 @@ const useStyles = makeStyles({
 });
 
 const query = `
-{
-  getLastKnownMeasurement(metricName: "oilTemp") {
+query($metricName: String!) {
+  getLastKnownMeasurement(metricName: $metricName) {
   	metric
     value
     unit
@@ -37,6 +37,9 @@ export default function MetricCard({ title, metricReading }: CardProps) {
 
   const [result] = useQuery({
     query,
+    variables: {
+      metricName: title
+    }
   });
 
   const { fetching, data, error } = result;
