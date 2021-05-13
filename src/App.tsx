@@ -10,6 +10,7 @@ import Wrapper from './components/Wrapper';
 import NowWhat from './components/NowWhat';
 import Graphs from "./components/Graphs";
 import MultiSelect from "./Features/MultiSelect/MultiSelect";
+import MetricCardContainer from "./Features/MetricReadings/MetricCardContainer";
 
 const store = createStore();
 const theme = createMuiTheme({
@@ -33,7 +34,7 @@ const App = () => (
       <Wrapper>
         <Header />
         <MultiSelect />
-        <NowWhat />
+        <MetricCardContainer />
         <Graphs />
         <ToastContainer />
       </Wrapper>

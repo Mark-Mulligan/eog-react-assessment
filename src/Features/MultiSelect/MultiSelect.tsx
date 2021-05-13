@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useDispatch, useSelector } from 'react-redux';
@@ -60,16 +60,10 @@ const MultiSelect = () => {
   const dispatch = useDispatch();
   const { metricsAvailable, metricsSelected } = useSelector(getMetricsAvailable);
 
-  // Placeholder state for select.  Need to put in store
-  const [selected, setSelected] = useState<string[]>([]);
-
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    //setSelected(event.target.value as string[]);
     const optionsSelected = event.target.value as string[];
     dispatch(actions.metricsSelected(optionsSelected as any))
   };
-
-  
 
   const [result] = useQuery({
     query,
@@ -86,7 +80,6 @@ const MultiSelect = () => {
     if (!data) return;
 
     const { getMetrics } = data;
-    console.log(data);
     dispatch(actions.metricsAvailable(getMetrics));
   }, [data, error, dispatch, metricsSelected]);
 
